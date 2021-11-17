@@ -24,30 +24,30 @@ app.get("/app/", (req, res, next) => {npm
 
 // Define other CRUD API endpoints using express.js and better-sqlite3
 // CREATE a new user (HTTP method POST) at endpoint /app/new/
-app.get("/app/user", (req, res) => {   
+app.get("/app/new/user", (req, res) => {   
 	const stmt = db.prepare("INSERT INTO userinfo (req.body.user, req.body.pass) VALUES (?, ?)");
 	console.log(info.changes);
 	res.status(201).json({"message":"OK (201)"})
 });
 // READ a list of all users (HTTP method GET) at endpoint /app/users/
-app.get("/app/user", (req, res) => {	
+app.get("/app/users", (req, res) => {	
 	const stmt = db.prepare("SELECT * FROM userinfo").all();
 	res.status(200).json(stmt);
 });
 
 // READ a single user (HTTP method GET) at endpoint /app/user/:id
-app.get("/app/user", (req, res) => {   
+app.get("/app/user/:id", (req, res) => {   
 	const stmt = db.prepare("SELECT * FROM userinfo WHERE id = ?").all();
 	res.status(200).json({"message":"OK (200)"})
 });
 // UPDATE a single user (HTTP method PATCH) at endpoint /app/update/user/:id
-app.get("/app/user", (req, res) => {   
-	const stmt = db.prepare("UPDATE userinfo SET user = COALESCE(?,user), pass = COALESCE(?,pass) WHERE id = ?");
+app.get("/app/update/user/:id", (req, res) => {   
+	const stmt = db.prepare("UPDATE userinfo SET req.body.user = COALESCE(?,req.body.user), req.body.pass = COALESCE(?,req.body.pass) WHERE id = ?");
 	res.status(405).json({"message":"OK (405)"})
 	console.log(info.changes);
 });
 // DELETE a single user (HTTP method DELETE) at endpoint /app/delete/user/:id
-app.get("/app/user", (req, res) => {   
+app.get("/app/delete/user/:id", (req, res) => {   
 	const stmt = db.prepare("DELETE FROM userinfo WHERE id = ?");
 	res.status(405).json({"message":"OK (405)"})
 	console.log(info.changes);
