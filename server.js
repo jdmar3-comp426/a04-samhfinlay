@@ -43,16 +43,17 @@ app.get("/app/user/:id", (req, res) => {
 	res.status(200).json(get);
 });
 // UPDATE a single user (HTTP method PATCH) at endpoint /app/update/user/:id
-app.get("/app/update/user/:id", (req, res) => {
+app.patch("/app/update/user/:id", function(req, res) {
 	const stmt = db.prepare("UPDATE userinfo SET req.body.user = COALESCE(?,user), pass = COALESCE(?,pass) WHERE id = ?");
 	var protected = md5(req.body.pass);
 	let info = stmt.run(req.body.user, protected, req.params.id);
-	res.status(200).json({ message: "OK (200)" });
+	res.status(200).json({ "message": "OK (200)" });
 });
 // DELETE a single user (HTTP method DELETE) at endpoint /app/delete/user/:id
-app.get("/app/delete/user/:id", (req, res) => {
+app.delete("/app/delete/user/:id", function(req, res) {
 	const stmt = db.prepare("DELETE FROM userinfo WHERE id = ?");
-	res.status(405).json({ "message": "OK (405)" });
+	let info = stmt.run(req.params.id);
+	res.status(200).json({ "message": "OK (405)".replace("%X%",info.changes).replace("%Y%", req.params.id)});
 	console.log(info.changes);
 });
 // Default response for any other request
